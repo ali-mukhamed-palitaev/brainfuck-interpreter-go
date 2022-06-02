@@ -3,7 +3,6 @@ package lib
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -76,11 +75,14 @@ func (i *Interpreter) RemoveCommand(commandName string) {
 
 // Execute executes brainfuck code
 func (i *Interpreter) Execute(r io.Reader) {
-	code, err := ioutil.ReadAll(r)
-	if err != nil {
-		log.Fatal(err)
+	for {
+		p := []byte{}
+		_, err := r.Read(p)
+		if err != nil {
+			log.Fatal(err)
+		}
+		i.ExecuteWith(p)
 	}
-	i.ExecuteWith(code)
 }
 
 // joinCommands joins default commands and custom commands and returns all commands
